@@ -2,14 +2,22 @@ import globals
 import sqlite3
 import os
   
-def insert_category_entry(name, description, hidden):
+def insert_category_entry(name, description, hidden, id = None):
   conn = globals.__conn__
   c = conn.cursor()
-  c.execute('INSERT INTO categories(name, description, hidden) VALUES (?, ?, ?)', (
-    globals.__CATEGORY_TYPES__["name"](name), 
-    globals.__CATEGORY_TYPES__["description"](description), 
-    globals.__CATEGORY_TYPES__["hidden"](hidden),
-  ))
+  if not id:
+    c.execute('INSERT INTO categories(name, description, hidden) VALUES (?, ?, ?)', (
+      globals.__CATEGORY_TYPES__["name"](name), 
+      globals.__CATEGORY_TYPES__["description"](description), 
+      globals.__CATEGORY_TYPES__["hidden"](hidden),
+    ))
+  else:
+    c.execute('INSERT INTO categories(id, name, description, hidden) VALUES (?, ?, ?, ?)', (
+      globals.__CATEGORY_TYPES__["id"](id), 
+      globals.__CATEGORY_TYPES__["name"](name), 
+      globals.__CATEGORY_TYPES__["description"](description), 
+      globals.__CATEGORY_TYPES__["hidden"](hidden),
+    ))    
   conn.commit()
   return
   

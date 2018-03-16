@@ -35,7 +35,5 @@ def up():
     
   schedules = load_schedules_old()
   for event in schedules:
-    if event['name'] == "HEAD":
-      continue
     insert_schedule_entry(event['time'], event['category'] + 1, event['name'], event['description'])
   

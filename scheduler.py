@@ -73,14 +73,17 @@ def main():
   parser = argparse.ArgumentParser(description='Record your schedule.')
   parser.add_argument('--init', action='store_const', dest='accumulate', 
     const=init, default = do_nothing, help="initiates the scheduler")
-  parser.add_argument('-a', '--add-entry', action='store_const', dest='accumulate', const=add_schedule_entry, 
+  parser.add_argument('-a', '--add-event', action='store_const', dest='accumulate', const=add_schedule_entry, 
     default = do_nothing, help="adds an entry to the schedule")
-  parser.add_argument('-r', '--report', action='store_const', dest='accumulate', const=report_time_spent, 
-    default = do_nothing, help="adds an entry to the schedule")
+  parser.add_argument('-r', '--report', nargs = "?", action='store', dest='report', type=float, const=-1,
+    default = None, help="reports time spent in past [REPORT] hours or blank for prompt")
   args = parser.parse_args()
+  if args.report:
+    if args.report == -1:
+      report_time_spent()
+    print_time_spent(time.time() - args.report * 3600)
   args.accumulate()
   globals.close_conn()
-
   
 if __name__ == "__main__":
   main()

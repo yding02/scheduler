@@ -52,21 +52,25 @@ def add_schedule_entry():
   insert_event_entry(time.time(), get_category_id(category), name, description)
   return 
 
-def print_time_spent(start):
-  events = scheduler.analytics.time.time_spent_by_category(start)
-  categories = load_categories()
-  category_ids = get_category_id_to_names(categories)
+def print_time_spent(events, category_ids):
   print('{0:<16} {1:<8}'.format('Category', 'Time (hrs)'))
   keys = list(events.keys())
   keys.sort(key = lambda x : -events[x])
   for key in keys:
     print('{0:<16} {1:<8.2f}'.format(category_ids[key], events[key] / 3600))
   return
+
+def report_time_spent(start):
+  events = scheduler.analytics.time.time_spent_by_category(start)
+  categories = load_categories()
+  category_ids = get_category_id_to_names(categories)
+  print_time_spent(events, category_ids)  
   
-def report_time_spent():
+def report_time_spent_input():
   current_time = time.time()
   offset = float(input("Start time (in hrs ago): "))
-  print_time_spent(current_time - offset * 60 * 60)
+  start = current_time - offset * 60 * 60
+  report_time_spent(start)
   return
   
 def init():
@@ -76,6 +80,9 @@ def init():
   init_db()
   return
 
+def backup():
+  return  
+  
 def main():
   #initialize global variables
   globals.init()
@@ -92,8 +99,8 @@ def main():
   args = parser.parse_args()
   if args.report:
     if args.report == -1:
-      report_time_spent()
-    print_time_spent(time.time() - args.report * 3600)
+      report_time_spent_input()
+    report_time_spent(time.time() - args.report * 3600)
   args.execute()
   globals.close_conn()
   

@@ -35,8 +35,7 @@ def print_categories(categories, display_hidden = False):
     if category['hidden'] and not display_hidden:
       continue
     name = category['name']
-    print(name, end = ' ')
-  print()
+    print(name)
       
 def add_category_entry():
   categories = scheduler.io.load.load_categories()

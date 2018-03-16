@@ -1,5 +1,8 @@
 import sqlite3
 
+def processed_string(string):
+  return str(string).strip().lower()
+
 def init():
   global __DATA_PATH__, __DATA_DIR__
   global __EVENT_PATTERN__, __CATEGORY_PATTERN__
@@ -13,13 +16,13 @@ def init():
     'id' : int, 
     'time' : int, 
     'category_id' : int, 
-    'name' : str, 
+    'name' : processed_string, 
     'description' : str,
   }
 
   __CATEGORY_TYPES__ = {
     'id' : int, 
-    'name' : str, 
+    'name' : processed_string, 
     'description' : str, 
     'hidden' : int,
   }

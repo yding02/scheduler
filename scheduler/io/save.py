@@ -1,6 +1,21 @@
 import globals
 import sqlite3
 import os
+
+def update_category_entry(id, new_name, new_description, new_hidden):
+  conn = globals.__conn__
+  c = conn.cursor()
+  c.execute('''UPDATE categories
+               SET name = ?, description = ?, hidden = ?
+               WHERE id = ?;
+            ''', (
+              globals.__CATEGORY_TYPES__["name"](new_name), 
+              globals.__CATEGORY_TYPES__["description"](new_description), 
+              globals.__CATEGORY_TYPES__["hidden"](new_hidden), 
+              globals.__CATEGORY_TYPES__["name"](id),
+            ))
+  conn.commit()
+  return
   
 def insert_category_entry(name, description, hidden, id = None):
   conn = globals.__conn__

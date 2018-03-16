@@ -26,17 +26,27 @@ def input_category(category_names):
     else:
       return category
 
-def add_schedule_entry():
-  categories = load_categories()
-  name = input("Name: ")
-  description = input("Description: ")
-  print("Existing categories:")
+def print_categories(categories, display_hidden = False):
+  print("Existing categories: ")
   for category in categories:
-    if category['hidden']:
+    if category['hidden'] and display_hidden:
       continue
     name = category['name']
     print(name, end = ' ')
   print()
+      
+def add_category_entry():
+  categories = load_categories()
+  print_categories(categories, True)
+  category_names = get_category_names_to_id(categories)
+  input_category(category_names)
+  return
+      
+def add_schedule_entry():
+  categories = load_categories()
+  name = input("Name: ")
+  description = input("Description: ")
+  print_categories(categories)
   category_names = get_category_names_to_id(categories)
   category = input_category(category_names)
   insert_event_entry(time.time(), get_category_id(category), name, description)
@@ -71,10 +81,12 @@ def main():
   globals.init()
   
   parser = argparse.ArgumentParser(description='Record your schedule.')
-  parser.add_argument('--init', action='store_const', dest='accumulate', 
+  parser.add_argument('--init', action='store_const', dest='execute', 
     const=init, default = do_nothing, help="initiates the scheduler")
-  parser.add_argument('-a', '--add-event', action='store_const', dest='accumulate', const=add_schedule_entry, 
+  parser.add_argument('-a', '--add-event', action='store_const', dest='execute', const=add_schedule_entry, 
     default = do_nothing, help="adds an entry to the schedule")
+  parser.add_argument('--add-category', action='store_const', dest='execute', const=add_category_entry, 
+    default = do_nothing, help="creates a new category")
   parser.add_argument('-r', '--report', nargs = "?", action='store', dest='report', type=float, const=-1,
     default = None, help="reports time spent in past [REPORT] hours or blank for prompt")
   args = parser.parse_args()
@@ -82,7 +94,7 @@ def main():
     if args.report == -1:
       report_time_spent()
     print_time_spent(time.time() - args.report * 3600)
-  args.accumulate()
+  args.execute()
   globals.close_conn()
   
 if __name__ == "__main__":

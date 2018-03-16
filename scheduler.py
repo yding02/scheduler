@@ -30,7 +30,7 @@ def add_schedule_entry():
   categories = load_categories()
   name = input("Name: ")
   description = input("Description: ")
-  print("existing categories:")
+  print("Existing categories:")
   for category in categories:
     if category['hidden']:
       continue
@@ -84,5 +84,3 @@ def main():
   
 if __name__ == "__main__":
   main()
-
-

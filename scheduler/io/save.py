@@ -1,22 +1,27 @@
 import globals
-
-def write_category_entry(id, name, description, type = "a"):
-  globals.CATEGORY_PATTERN['id'] = id
-  globals.CATEGORY_PATTERN['name'] = name
-  globals.CATEGORY_PATTERN['description'] = description
-  f = open(globals.CATEGORY_PATH, type)
-  f.write(repr(globals.CATEGORY_PATTERN) + '\n')
-  f.close()
+import sqlite3
+import os
+  
+def insert_category_entry(name, description, hidden):
+  conn = globals.__conn__
+  c = conn.cursor()
+  c.execute('INSERT INTO categories(name, description, hidden) VALUES (?, ?, ?)', (
+    globals.__CATEGORY_TYPES__["name"](name), 
+    globals.__CATEGORY_TYPES__["description"](description), 
+    globals.__CATEGORY_TYPES__["hidden"](hidden),
+  ))
+  conn.commit()
   return
   
-def write_schedule_entry(t, category_id, name, description, type = "a"):
-  globals.SCHEDULE_PATTERN['time'] = t
-  globals.SCHEDULE_PATTERN['category'] = category_id
-  globals.SCHEDULE_PATTERN['name'] = name
-  globals.SCHEDULE_PATTERN['description'] = description
-  f = open(globals.SCHEDULE_PATH, type)
-  f.write(repr(globals.SCHEDULE_PATTERN) + '\n')
-  f.close()
+def insert_schedule_entry(t, category_id, name, description):
+  conn = globals.__conn__
+  c = conn.cursor()
+  c.execute('INSERT INTO events(time, category_id, name, description) VALUES (?, ?, ?, ?)', (
+    globals.__SCHEDULE_TYPES__['time'](t), 
+    globals.__SCHEDULE_TYPES__['category_id'](category_id), 
+    globals.__SCHEDULE_TYPES__['name'](name), 
+    globals.__SCHEDULE_TYPES__['description'](description),
+  ))
+  conn.commit()
   return
-  
   

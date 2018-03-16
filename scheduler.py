@@ -1,18 +1,14 @@
 import argparse
 import time
 import os
+from scheduler.io.create import *
 from scheduler.io.save import *
 from scheduler.io.load import *
+from scheduler.categories.utils import *
 import globals
 
 def do_nothing():
   return
-
-def get_category_names_to_id(categories):
-  names = {}
-  for category in categories:
-    names[category['name']] = category['id']
-  return names
   
 def input_category(category_names):
   while True:
@@ -24,9 +20,7 @@ def input_category(category_names):
       else:
         description = input("Description: ")
         categories = load_categories()
-        id = categories[-1]['id'] + 1
-        write_category_entry(id, category, description)
-        category_names[category] = id
+        insert_category_entry(category, description, False)
         return category
     else:
       return category
@@ -36,22 +30,22 @@ def add_schedule_entry():
   name = input("Name: ")
   description = input("Description: ")
   print("existing categories:")
-  category_names = get_category_names_to_id(categories)
-  for name in category_names:
+  for category in categories:
+    if category['hidden']:
+      continue
+    name = category['name']
     print(name, end = ' ')
   print()
+  category_names = get_category_names_to_id(categories)
   category = input_category(category_names)
-  write_schedule_entry(time.time(), category_names[category], name, description)
-  return   
+  insert_schedule_entry(time.time(), get_category_id(category), name, description)
+  return 
   
 def init():
   c = input("WARNING: will overwrite old data [y/N]: ")
   if c.lower() != "y":
     return
-  if not os.path.exists("data"):
-    os.makedirs("data")
-  write_schedule_entry(time.time(), 0, "HEAD", "HEAD sentinel", type = "w")
-  write_category_entry(0, "sentinel", "category for sentinels", type = "w")
+  init_db()
   return
 
 def main():
@@ -59,11 +53,13 @@ def main():
   globals.init()
   
   parser = argparse.ArgumentParser(description='Record your schedule.')
-  parser.add_argument('--init', action='store_const', dest='accumulate', const=init, default = do_nothing, help="initiates the scheduler")
+  parser.add_argument('--init', action='store_const', dest='accumulate', 
+    const=init, default = do_nothing, help="initiates the scheduler")
   parser.add_argument('-a', '--add-entry', action='store_const', dest='accumulate', const=add_schedule_entry, 
     default = do_nothing, help="adds an entry to the schedule")
   args = parser.parse_args()
   args.accumulate()
+  globals.close_conn()
 
   
 if __name__ == "__main__":

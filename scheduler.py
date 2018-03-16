@@ -4,6 +4,7 @@ import os
 from scheduler.io.create import *
 from scheduler.io.save import *
 from scheduler.io.load import *
+import scheduler.analytics.time
 from scheduler.categories.utils import *
 import globals
 
@@ -40,6 +41,23 @@ def add_schedule_entry():
   category = input_category(category_names)
   insert_event_entry(time.time(), get_category_id(category), name, description)
   return 
+
+def print_time_spent(start):
+  events = scheduler.analytics.time.time_spent_by_category(start)
+  categories = load_categories()
+  category_ids = get_category_id_to_names(categories)
+  print('{0:<16} {1:<8}'.format('Category', 'Time (hrs)'))
+  keys = list(events.keys())
+  keys.sort(key = lambda x : -events[x])
+  for key in keys:
+    print('{0:<16} {1:<8.2f}'.format(category_ids[key], events[key] / 3600))
+  return
+  
+def report_time_spent():
+  current_time = time.time()
+  offset = float(input("Start time (in hrs ago): "))
+  print_time_spent(current_time - offset * 60 * 60)
+  return
   
 def init():
   c = input("WARNING: will overwrite old data [y/N]: ")
@@ -56,6 +74,8 @@ def main():
   parser.add_argument('--init', action='store_const', dest='accumulate', 
     const=init, default = do_nothing, help="initiates the scheduler")
   parser.add_argument('-a', '--add-entry', action='store_const', dest='accumulate', const=add_schedule_entry, 
+    default = do_nothing, help="adds an entry to the schedule")
+  parser.add_argument('-r', '--report', action='store_const', dest='accumulate', const=report_time_spent, 
     default = do_nothing, help="adds an entry to the schedule")
   args = parser.parse_args()
   args.accumulate()

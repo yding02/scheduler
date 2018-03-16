@@ -35,7 +35,7 @@ def load_events():
   return load_events_sql('SELECT * FROM events ORDER BY id;')
 
 def load_events_after(time):
-  return load_events_sql('SELECT * FROM events ORDER BY id WHERE time >= ?;', (
+  return load_events_sql('SELECT * FROM events WHERE time >= ? ORDER BY id;', (
     globals.__EVENT_TYPES__['time'](time),
   ))
   

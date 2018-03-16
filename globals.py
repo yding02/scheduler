@@ -2,14 +2,14 @@ import sqlite3
 
 def init():
   global __DATA_PATH__, __DATA_DIR__
-  global __SCHEDULE_PATTERN__, __CATEGORY_PATTERN__
-  global __SCHEDULE_TYPES__, __CATEGORY_TYPES__
+  global __EVENT_PATTERN__, __CATEGORY_PATTERN__
+  global __EVENT_TYPES__, __CATEGORY_TYPES__
   global __conn__
   
   __DATA_DIR__ = "data"
   __DATA_PATH__ = __DATA_DIR__ + "/data.db"
   
-  __SCHEDULE_TYPES__ = {
+  __EVENT_TYPES__ = {
     'id' : int, 
     'time' : int, 
     'category_id' : int, 
@@ -24,7 +24,7 @@ def init():
     'hidden' : int,
   }
   
-  __SCHEDULE_PATTERN__ = ('id', 'time', 'category_id', 'name', 'description',)
+  __EVENT_PATTERN__ = ('id', 'time', 'category_id', 'name', 'description',)
   __CATEGORY_PATTERN__ = ('id', 'name', 'description', 'hidden',)
   
   start_conn()

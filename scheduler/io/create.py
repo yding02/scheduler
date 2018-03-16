@@ -2,6 +2,8 @@ import globals
 import sqlite3
 import os
 import time
+from . import save
+from . import load
 
 def init_db():
   globals.close_conn()
@@ -29,19 +31,19 @@ def init_db():
             
   globals.__CATEGORY_TYPES__
   
-  c.execute('INSERT INTO categories(name, description, hidden) VALUES (?, ?, ?)', (
-    globals.__CATEGORY_TYPES__["name"]("sentinel"), 
-    globals.__CATEGORY_TYPES__["description"]("sentinel"), 
-    globals.__CATEGORY_TYPES__["hidden"](1),
-  ))
-  c.execute('SELECT id FROM categories WHERE name = "sentinel"')
-  id = c.fetchone()[0]
-  c.execute('INSERT INTO events(time, category_id, name, description) VALUES (?, ?, ?, ?)', (
-    globals.__SCHEDULE_TYPES__['time'](time.time()), 
-    globals.__SCHEDULE_TYPES__['category_id'](id), 
-    globals.__SCHEDULE_TYPES__['name']("HEAD"), 
-    globals.__SCHEDULE_TYPES__['description']("HEAD"),
-  ))
+  save.insert_category_entry(globals.__CATEGORY_TYPES__["name"]("sentinel"), 
+    globals.__CATEGORY_TYPES__["description"]("sentinel"),
+    globals.__CATEGORY_TYPES__["hidden"](1)
+  )
+  
+  id = load.get_category_id("sentinel")
+  
+  save.insert_event_entry(globals.__EVENT_TYPES__['time'](time.time()),
+    globals.__EVENT_TYPES__['category_id'](id),
+    globals.__EVENT_TYPES__['name']("HEAD"),
+    globals.__EVENT_TYPES__['description']("HEAD")
+  )
+
   conn.commit()
   return
   

@@ -38,7 +38,7 @@ def add_schedule_entry():
   print()
   category_names = get_category_names_to_id(categories)
   category = input_category(category_names)
-  insert_schedule_entry(time.time(), get_category_id(category), name, description)
+  insert_event_entry(time.time(), get_category_id(category), name, description)
   return 
   
 def init():

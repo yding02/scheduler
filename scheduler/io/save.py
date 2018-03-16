@@ -21,14 +21,14 @@ def insert_category_entry(name, description, hidden, id = None):
   conn.commit()
   return
   
-def insert_schedule_entry(t, category_id, name, description):
+def insert_event_entry(t, category_id, name, description):
   conn = globals.__conn__
   c = conn.cursor()
   c.execute('INSERT INTO events(time, category_id, name, description) VALUES (?, ?, ?, ?)', (
-    globals.__SCHEDULE_TYPES__['time'](t), 
-    globals.__SCHEDULE_TYPES__['category_id'](category_id), 
-    globals.__SCHEDULE_TYPES__['name'](name), 
-    globals.__SCHEDULE_TYPES__['description'](description),
+    globals.__EVENT_TYPES__['time'](t), 
+    globals.__EVENT_TYPES__['category_id'](category_id), 
+    globals.__EVENT_TYPES__['name'](name), 
+    globals.__EVENT_TYPES__['description'](description),
   ))
   conn.commit()
   return

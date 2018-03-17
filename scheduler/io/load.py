@@ -32,10 +32,10 @@ def load_events_sql(sql, args = tuple()):
   return load_sql(sql, globals.__EVENT_PATTERN__, args)
 
 def load_n_events(n):
-  return load_events_sql('SELECT * FROM events ORDER BY time ASC LIMIT ?', (n,))
+  return load_events_sql('SELECT * FROM events ORDER BY time DESC LIMIT ?', (n,))
   
 def load_events():
-  return load_events_sql('SELECT * FROM events ORDER BY time DESC;')
+  return load_events_sql('SELECT * FROM events ORDER BY time ASC;')
 
 def load_events_after(time):
   return load_events_sql('SELECT * FROM events WHERE time >= ? ORDER BY time ASC;', (

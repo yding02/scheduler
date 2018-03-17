@@ -16,6 +16,7 @@ class bcolors:
   FAIL = '\033[91m'
   ENDC = '\033[0m'
   BOLD = '\033[1m'
+  BRIGHT_RED = '\033[101m'
   UNDERLINE = '\033[4m'
 
 def do_nothing():
@@ -93,11 +94,13 @@ def update_category_entry():
   
 def print_time_spent(events, category_ids):
   total_time = sum([events[key] for key in events])
-  print('{0:<16} {1:<16} {2:<16}'.format('Category', 'Time (hrs)', 'Percentage'))
+  print(bcolors.WARNING, end = "")
+  print('{0:<16} {1:<16} {2:<10}'.format('Category', 'Time (hrs)', 'Percentage'))
+  print(bcolors.ENDC, end = "")
   keys = list(events.keys())
   keys.sort(key = lambda x : -events[x])
   for key in keys:
-    print('{0:<16} {1:<16.2f} {2:<16.2f}'.format(category_ids[key], events[key] / 3600, events[key] / total_time * 100))
+    print('{0:<16} {1:<16.2f} {2:<10.2f}'.format(category_ids[key], events[key] / 3600, events[key] / total_time * 100))
   return
 
 def report_time_spent(start):

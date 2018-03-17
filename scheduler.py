@@ -8,6 +8,16 @@ import scheduler.analytics.time
 import scheduler.categories.utils
 import globals
 
+class bcolors:
+  HEADER = '\033[95m'
+  OKBLUE = '\033[94m'
+  OKGREEN = '\033[92m'
+  WARNING = '\033[93m'
+  FAIL = '\033[91m'
+  ENDC = '\033[0m'
+  BOLD = '\033[1m'
+  UNDERLINE = '\033[4m'
+
 def do_nothing():
   return
   
@@ -113,11 +123,11 @@ def backup():
   return  
 
 def print_event(event, current_time, categories_to_id):
-  print('Event date: {} | {:.2f} minutes ago'.format(time.ctime(event['time']), 
-    (current_time - event['time']) / 60))
-  print('Event name: ', event['name'])
-  print('Event category: ', categories_to_id[event['category_id']])
-  print('Event description: ', event['description'])
+  print(bcolors.WARNING + 'Event date: {} | {:.2f} minutes ago'.format(time.ctime(event['time']), 
+    (current_time - event['time']) / 60), bcolors.ENDC)
+  print('Event name:', event['name'])
+  print('Event category:', categories_to_id[event['category_id']])
+  print('Event description:', event['description'])
   print()
   return
   

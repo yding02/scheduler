@@ -92,11 +92,12 @@ def update_category_entry():
   return
   
 def print_time_spent(events, category_ids):
-  print('{0:<16} {1:<8}'.format('Category', 'Time (hrs)'))
+  total_time = sum([events[key] for key in events])
+  print('{0:<16} {1:<16} {2:<16}'.format('Category', 'Time (hrs)', 'Percentage'))
   keys = list(events.keys())
   keys.sort(key = lambda x : -events[x])
   for key in keys:
-    print('{0:<16} {1:<8.2f}'.format(category_ids[key], events[key] / 3600))
+    print('{0:<16} {1:<16.2f} {2:<16.2f}'.format(category_ids[key], events[key] / 3600, events[key] / total_time * 100))
   return
 
 def report_time_spent(start):
@@ -159,13 +160,13 @@ def main():
   parser.add_argument('--log', nargs = "?", action='store', dest='log', type=int, const=10,
     default = None, help="reports the past [LOG] events (10 by default)")
   args = parser.parse_args()
+  args.execute()
   if args.report:
     if args.report == -1:
       report_time_spent_input()
     report_time_spent(time.time() - args.report * 3600)
   if args.log:
     log(args.log)
-  args.execute()
   globals.close_conn()
   
 if __name__ == "__main__":

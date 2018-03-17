@@ -111,6 +111,25 @@ def init():
 
 def backup():
   return  
+
+def print_event(event, current_time, categories_to_id):
+  print('Event date: {} | {:.2f} minutes ago'.format(time.ctime(event['time']), 
+    (current_time - event['time']) / 60))
+  print('Event name: ', event['name'])
+  print('Event category: ', categories_to_id[event['category_id']])
+  print('Event description: ', event['description'])
+  print()
+  return
+  
+def log(n):
+  categories = scheduler.io.load.load_categories()
+  category_ids = scheduler.categories.utils.get_category_id_to_names(categories)
+  events = scheduler.io.load.load_n_events(n)
+  current_time = time.time()
+  for event in events:
+    print_event(event, current_time, category_ids)
+  return
+  
   
 def main():
   #initialize global variables
@@ -127,11 +146,15 @@ def main():
     default = None, help="reports time spent in past [REPORT] hours or blank for prompt")
   parser.add_argument('--update-category', action='store_const', dest='execute', const=update_category_entry,
     default = do_nothing, help="creates a new category")
+  parser.add_argument('--log', nargs = "?", action='store', dest='log', type=int, const=10,
+    default = None, help="reports the past [LOG] events (10 by default)")
   args = parser.parse_args()
   if args.report:
     if args.report == -1:
       report_time_spent_input()
     report_time_spent(time.time() - args.report * 3600)
+  if args.log:
+    log(args.log)
   args.execute()
   globals.close_conn()
   

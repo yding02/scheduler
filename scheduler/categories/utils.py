@@ -9,3 +9,4 @@ def get_category_id_to_names(categories):
   for category in categories:
     names[category['id']] = category['name']
   return names
+  

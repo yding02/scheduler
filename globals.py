@@ -1,4 +1,5 @@
 import sqlite3
+import os
 
 def processed_string(string):
   return str(string).strip().lower()
@@ -34,9 +35,16 @@ def init():
 
 def close_conn():
   global __conn__
+  if not __conn__:
+    return
   __conn__.close()
   
 def start_conn():
   global __conn__
+  if not os.path.exists(__DATA_DIR__):
+    os.makedirs("data")
+    print("Database does not exist yet! Please initiate with --init.")
+  elif not os.path.exists(__DATA_PATH__):
+    print("Database does not exist yet! Please initiate with --init.")
   __conn__ = sqlite3.connect(__DATA_PATH__)
   
